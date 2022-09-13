@@ -1,9 +1,9 @@
 {
-  "name": "ArgonOne Active Cooling",
+  "name": "WaveShare CM4 IO Board Case fan Control",
   "image": "adamoutler/{arch}-hassosargonone",
   "version": "28d",
   "slug": "argon_one_temp",
-  "description": "Actively keeping your Argon One cool.",
+  "description": "Active control for the fan in the CM4 IO Board Case by WaveShare.",
   "arch": ["armhf", "armv7", "aarch64"],
   "auth_api": true,
   "homeassistant_api": true,
