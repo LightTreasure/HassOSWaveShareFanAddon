@@ -26,7 +26,7 @@ calibrateI2CPort() {
     echo "checking i2c port ${port} at ${device}";
     detection=$(i2cdetect -y "${port}");
     echo "${detection}"
-    [[ "${detection}" == *"10: -- -- -- -- -- -- -- -- -- -- 1a -- -- -- -- --"* ]] && thePort=${port};
+    [[ "${detection}" == *"20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 2f"* ]] && thePort=${port};
     
   done;
   echo "Port not found...";
@@ -95,7 +95,7 @@ action() {
   fanPercentHex=$(printf '%x' "${fanPercent}")
   printf '%(%Y-%m-%d_%H:%M:%S)T'
   echo ": ${cpuTemp}${CorF} - Level ${fanLevel} - Fan ${fanPercent}% (${fanMode})";
-  i2cset -y "${port}" 0x01a "${fanPercentHex}"
+  i2cset -y "${port}" 0x2f 0x30 "${fanPercentHex}"
   returnValue=${?}
   test "${createEntity}" == "true" && fanSpeedReport "${fanPercent}" "${fanLevel}" "${fanMode}" "${cpuTemp}" "${CorF}" &
   return ${returnValue}
@@ -121,19 +121,19 @@ previousFanLevel=-1;
 
 thePort=255;
 
-echo "Detecting Layout of i2c, we expect to see \"1a\" here."
+echo "Detecting Layout of i2c, we expect to see \"2f\" here."
 calibrateI2CPort;
 port=${thePort};
 echo "I2C Port ${port}";
 
 #Trap exits and set fan to 100% like a safe mode.
-trap 'echo "Failed ${LINENO}: $BASH_COMMAND";i2cset -y ${port} 0x01a 0x63;previousFanLevel=-1;fanLevel=-1; echo Safe Mode Activated!;' ERR EXIT INT TERM
+trap 'echo "Failed ${LINENO}: $BASH_COMMAND";i2cset -y ${port} 0x2f 0x30 0xff;previousFanLevel=-1;fanLevel=-1; echo Safe Mode Activated!;' ERR EXIT INT TERM
 
 
 if [ "${port}" == 255 ]; then 
-  echo "Argon One was not detected on i2c. Argon One will show a 1a on the i2c bus above. This add-on will not control temperature without a connection to Argon One.";
+  echo "Fan was not detected on i2c. The fan will show a 2f on the i2c bus above. This add-on will not control temperature without a connection to the fan.";
 else 
-  echo "Settings initialized. Argon One Detected. Beginning monitor.."
+  echo "Settings initialized. Fan Detected. Beginning monitor.."
 fi;
 
 #Counts the number of repetitions so we can set a 10minute count. 
