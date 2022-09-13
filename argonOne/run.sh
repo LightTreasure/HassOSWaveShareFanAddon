@@ -27,6 +27,7 @@ calibrateI2CPort() {
     detection=$(i2cdetect -y "${port}");
     echo "${detection}"
     [[ "$detection" = *"20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 2f"* ]] && thePort=${port};
+    echo "deploy test"
     if [ "${port}" != 255 ]; then
       break;
     fi
