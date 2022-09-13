@@ -26,7 +26,10 @@ calibrateI2CPort() {
     echo "checking i2c port ${port} at ${device}";
     detection=$(i2cdetect -y "${port}");
     echo "${detection}"
-    [[ "${detection}" == *"20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 2f"* ]] && thePort=${port} && break;
+    [[ "$detection" = *"20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 2f"* ]] && thePort=${port};
+    if [ "${port}" != 255 ]; then
+      break;
+    fi
   done;
   
   if [ "${port}" == 255 ]; then
